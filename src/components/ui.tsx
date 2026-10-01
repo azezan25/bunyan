@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { ChevronDown, X } from 'lucide-react';
 import { DocumentImport } from './DocumentImport';
 import { money, dateLabel, type Attachment, type ProjectData } from '../lib/project';
@@ -27,13 +28,14 @@ export function Sheet({ title, onClose, children, center }: { title: string; onC
     const prev = document.body.style.overflow; document.body.style.overflow = 'hidden';
     return () => { window.removeEventListener('keydown', k); document.body.style.overflow = prev; };
   }, [onClose]);
-  return (
+  return createPortal(
     <div className="scrim" onMouseDown={e => e.target === e.currentTarget && onClose()}>
       <div className={`sheet ${center ? 'center' : ''}`} role="dialog" aria-modal="true" aria-label={title}>
         <header><h3>{title}</h3><button className="icon-btn" aria-label="إغلاق" onClick={onClose}><X size={18} /></button></header>
         <div className="body">{children}</div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
